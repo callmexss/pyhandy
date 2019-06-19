@@ -1,5 +1,5 @@
 import os
-from setuptools import setup, find_packages 
+from setuptools import setup, find_packages
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -15,7 +15,7 @@ setup(
         version="0.0.2",
         author="callmexss",
         author_email="callmexss@126.com",
-        description="A collection of tools to make my life easier.",
+        description="A collection of python tools to make my life easier.",
         long_descripton=long_descripton,
         long_descripton_content_type="text/markdown",
         url="https://github.com/callmexss/pyhandy",
@@ -33,4 +33,3 @@ setup(
                 ],
             },
         )
-

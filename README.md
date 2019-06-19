@@ -1,2 +1,2 @@
 # pyhandy
-A collection of tools to make my life easier.
+A collection of python tools to make my life easier.
