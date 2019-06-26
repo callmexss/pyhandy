@@ -1,4 +1,4 @@
-from . import pyhandy
+# from . import pyhandy
 
 name = "pyhandy"
 
