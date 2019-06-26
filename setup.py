@@ -1,5 +1,6 @@
 import os
 from setuptools import setup, find_packages
+from pyhandy import __version__, __description__, __author__, __email__, __license__
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -12,10 +13,10 @@ with open(os.path.join(here, "README.md"), "r", encoding='utf-8') as f:
 
 setup(
         name="pyhandy",
-        version="0.0.2",
-        author="callmexss",
-        author_email="callmexss@126.com",
-        description="A collection of python tools to make my life easier.",
+        version=__version__,
+        author=__author__,
+        author_email=__email__,
+        description=__description__,
         long_descripton=long_descripton,
         long_descripton_content_type="text/markdown",
         url="https://github.com/callmexss/pyhandy",
@@ -29,7 +30,7 @@ setup(
         python_requires='>=3.6',
         entry_points={
             'console_scripts': [
-                'pyhandy=pyhandy:main',
+                'pyhandy=pyhandy.pyhandy:main',
                 ],
             },
         )

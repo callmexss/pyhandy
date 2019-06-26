@@ -8,9 +8,12 @@ Last Modified: Wednesday, 19th June 2019 6:00:06 pm
 Modified By:   xss (callmexss@126.com)
 -----
 '''
-import random
 import doctest
+import os
+import random
+import shutil
 import time
+
 from functools import wraps
 from inspect import signature
 
@@ -34,12 +37,12 @@ def typeassert(*ty_args, **ty_kwargs):
     return decorator
 
 
-class RandomWorker:
+class RandomHandy:
     """A worker who generate random things."""
 
     @typeassert(rand=random.Random)
     def __init__(self, rand=None):
-        """Construct a RandomWorker
+        """Construct a RandomHandy
         
         Arguments:
             rand {random.Random} -- an instance of random.Random class
@@ -76,92 +79,143 @@ class RandomWorker:
         elif etype is float:
             return [self.rand.random() * x for x in ret]
 
+    @typeassert(n=int, range_l=int, range_r=int)
+    def generate_random_array(self, n=100, range_l=0, range_r=100):
+        """Generate a random integer array
+        
+        Arguments:
+            n {int} -- size of the array
+            range_l {int} -- left boundary
+            range_r {int} -- right boundary
+        
+        Returns:
+            list -- a list of random integers
+        """
+        assert range_l < range_r
+        return [random.randint(range_l, range_r) for i in range(n)]
 
-@typeassert(int, int, int)
-def generate_random_array(n=100, range_l=0, range_r=100):
-    """Generate a random integer array
-    
-    Arguments:
-        n {int} -- size of the array
-        range_l {int} -- left boundary
-        range_r {int} -- right boundary
-    
-    Returns:
-        list -- a list of random integers
-    """
-    assert range_l < range_r
-    return [random.randint(range_l, range_r) for i in range(n)]
-
-
-@typeassert(int, int)
-def generate_nearly_ordered_array(n=100, swap_times=10):
-    """Generate a nearly ordered array
-    
-    Arguments:
-        n {int} -- size of the array
-        swap_times {int} -- swap times
-    
-    Returns:
-        list -- a nearly ordered array
-    """
-    li = [i for i in range(n)]
-    for i in range(swap_times):
-        posx = random.randint(0, n - 1)
-        posy = random.randint(0, n - 1)
-        li[posx], li[posy] = li[posy], li[posx]
-    return li
+    @typeassert(n=int, swap_times=int)
+    def generate_nearly_ordered_array(self, n=100, swap_times=10):
+        """Generate a nearly ordered array
+        
+        Arguments:
+            n {int} -- size of the array
+            swap_times {int} -- swap times
+        
+        Returns:
+            list -- a nearly ordered array
+        """
+        li = [i for i in range(n)]
+        for i in range(swap_times):
+            posx = random.randint(0, n - 1)
+            posy = random.randint(0, n - 1)
+            li[posx], li[posy] = li[posy], li[posx]
+        return li
 
 
-@typeassert(list)
-def is_sorted(arr):
-    """whether an array is sorted
-    
-    Arguments:
-        arr {list} -- an array
-    
-    Returns:
-        bool -- True if array is sorted else False
-    """
-    for i in range(len(arr)):
-        if arr[i] > arr[i + 1]:
-            return False
-        return True
+class SortHandy:
+    @typeassert(arr=list)
+    def is_sorted(self, arr):
+        """whether an array is sorted
+        
+        Arguments:
+            arr {list} -- an array
+        
+        Returns:
+            bool -- True if array is sorted else False
+        """
+        for i in range(len(arr)):
+            if arr[i] > arr[i + 1]:
+                return False
+            return True
+
+    @typeassert(arr=list)
+    def testSort(self, sort_func, arr):
+        start = time.clock()
+        sort_func(arr)
+        end = time.clock()
+        assert self.is_sorted(arr)
+
+        print(f"{sort_func.__name__} : {(end - start)} s")
 
 
-@typeassert(sort_name=str, arr=list)
-def testSort(sort_name, sort_func, arr):
-    start = time.clock()
-    sort_func(arr)
-    end = time.clock()
-    assert is_sorted(arr)
+class TimeHandy:
+    """Time handy."""
 
-    print(f"{sort_name} : {(end - start)} s")
+    @staticmethod
+    @typeassert(float, str)
+    def get_format_time(epoch_time, fmt="%Y-%m-%d %H:%M:%S"):
+        """Convert Epoch time to string format time
+        
+        Arguments:
+            epoch_time {float} -- epoch time
+        
+        Keyword Arguments:
+            fmt {str} -- string format pattern (default: {"%Y-%m-%d %H:%M:%S"})
 
+            Commonly used format codes:
+
+            %Y  Year with century as a decimal number.
+            %m  Month as a decimal number [01,12].
+            %d  Day of the month as a decimal number [01,31].
+            %H  Hour (24-hour clock) as a decimal number [00,23].
+            %M  Minute as a decimal number [00,59].
+            %S  Second as a decimal number [00,61].
+            %z  Time zone offset from UTC.
+            %a  Locale's abbreviated weekday name.
+            %A  Locale's full weekday name.
+            %b  Locale's abbreviated month name.
+            %B  Locale's full month name.
+            %c  Locale's appropriate date and time representation.
+            %I  Hour (12-hour clock) as a decimal number [01,12].
+            %p  Locale's equivalent of either AM or PM.
+
+        Returns:
+            str -- string format time
+        """
+        return time.strftime(fmt, time.localtime(epoch_time))
+
+    @staticmethod
+    @typeassert(str, str)
+    def get_epoch_time(date_time, pattern="%Y-%m-%d %H:%M:%S"):
+        """Get epoch time from string format time
+        
+        Arguments:
+            date_time {str} -- string format time
+        
+        Keyword Arguments:
+            pattern {str} -- string format pattern (default: {"%Y-%m-%d %H:%M:%S"})
+
+            Commonly used format codes:
+
+            %Y  Year with century as a decimal number.
+            %m  Month as a decimal number [01,12].
+            %d  Day of the month as a decimal number [01,31].
+            %H  Hour (24-hour clock) as a decimal number [00,23].
+            %M  Minute as a decimal number [00,59].
+            %S  Second as a decimal number [00,61].
+            %z  Time zone offset from UTC.
+            %a  Locale's abbreviated weekday name.
+            %A  Locale's full weekday name.
+            %b  Locale's abbreviated month name.
+            %B  Locale's full month name.
+            %c  Locale's appropriate date and time representation.
+            %I  Hour (12-hour clock) as a decimal number [01,12].
+            %p  Locale's equivalent of either AM or PM.
+        
+        Returns:
+            float -- epoch time
+        """
+        return time.mktime(time.strptime(date_time, pattern))
+
+
+class FSHandy:
+    """File System handy."""
+    pass
 
 
 if __name__ == '__main__':
-    worker = RandomWorker()
+    worker = RandomHandy()
 
-    def selection_sort(arr):
-        for i in range(len(arr)):
-            min_index = i
-            for j in range(i + 1, len(arr)):
-                if arr[j] < arr[min_index]:
-                    min_index = j
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-
-    def insertion_sort(arr):
-        for i in range(1, len(arr)):
-            e = arr[i]
-            j = i
-            while j > 0 and arr[j - 1] > e:
-                arr[j] = arr[j - 1]
-                j -= 1
-            arr[j] = e
-
-
-    # li = worker.gen_list(10000, (0, 100000))
-    li = generate_nearly_ordered_array(10000, 10)
-    li1 = li[:]
-    testSort("selection_sort", selection_sort, li)
-    testSort("insertion_sort", insertion_sort, li1)
+    fmttime = TimeHandy.get_format_time(12346)
+    print(fmttime)
