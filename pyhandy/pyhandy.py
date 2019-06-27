@@ -124,10 +124,10 @@ class SortHandy:
         Returns:
             bool -- True if array is sorted else False
         """
-        for i in range(len(arr)):
+        for i in range(len(arr) - 1):
             if arr[i] > arr[i + 1]:
                 return False
-            return True
+        return True
 
     @typeassert(arr=list)
     def testSort(self, sort_func, arr):
