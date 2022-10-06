@@ -23,7 +23,7 @@ class SortHandy:
                 return False
         return True
 
-    def testSort(self, sort_func, arr):
+    def test_sort(self, sort_func, arr):
         start = time.perf_counter()
         sort_func(arr)
         end = time.perf_counter()
@@ -34,4 +34,4 @@ class SortHandy:
 
 if __name__ == "__main__":
     sh = SortHandy()
-    sh.testSort(sorted, range(int(1e6)))
+    sh.test_sort(sorted, range(int(1e6)))
