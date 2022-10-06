@@ -7,26 +7,6 @@ Description:   handy random tools.
 
 import random
 import string
-from enum import Enum, auto
-
-
-class ProviderType(Enum):
-    UPPER = auto()
-    LOWER = auto()
-    LETTERS = auto()
-    DIGITS = auto()
-    PUNCTUATION = auto()
-    PRINTABLE = auto()
-
-    
-ProviderDict = {
-    ProviderType.UPPER: string.ascii_uppercase,
-    ProviderType.LOWER: string.ascii_lowercase,
-    ProviderType.LETTERS: string.ascii_letters,
-    ProviderType.DIGITS: string.digits,
-    ProviderType.PUNCTUATION: string.punctuation,
-    ProviderType.PRINTABLE: string.printable
-}
 
 
 class RandomHandy:
