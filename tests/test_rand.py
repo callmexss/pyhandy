@@ -67,4 +67,4 @@ def test_unique_string_with_sufficient_provider(n):
 
 def test_unique_string_with_insufficient_provider():
     with pytest.raises(ValueError):
-        FIXED_RAND.generate_string(50, True, string.ascii_letters)
+        FIXED_RAND.generate_string(60, True, string.ascii_letters)
