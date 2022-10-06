@@ -6,6 +6,27 @@ Description:   handy random tools.
 """
 
 import random
+import string
+from enum import Enum, auto
+
+
+class ProviderType(Enum):
+    UPPER = auto()
+    LOWER = auto()
+    LETTERS = auto()
+    DIGITS = auto()
+    PUNCTUATION = auto()
+    PRINTABLE = auto()
+
+    
+ProviderDict = {
+    ProviderType.UPPER: string.ascii_uppercase,
+    ProviderType.LOWER: string.ascii_lowercase,
+    ProviderType.LETTERS: string.ascii_letters,
+    ProviderType.DIGITS: string.digits,
+    ProviderType.PUNCTUATION: string.punctuation,
+    ProviderType.PRINTABLE: string.printable
+}
 
 
 class RandomHandy:
@@ -83,3 +104,33 @@ class RandomHandy:
             pos_y = random.randint(0, n - 1)
             li[pos_x], li[pos_y] = li[pos_y], li[pos_x]
         return li
+
+    def generate_string(self, size=10, unique=False, provider=None):
+        """Generate a random string.
+
+        Args:
+            size (int, optional): length of string. Defaults to 10.
+            unique (bool, optional): unique or not. Defaults to False.
+            provider (str, optional): a string as provider. Defaults to None.
+
+        Raises:
+            ValueError: when need unique and not enough strings are provided
+
+        Returns:
+            str: a random string with given length
+        """
+        if not provider:
+            provider = string.ascii_letters + string.digits
+
+        if unique and size > len(provider):
+            raise ValueError("not enough provider to generate unique random string")
+
+        buffer = []
+        while len(buffer) < size:
+            c = random.choice(provider)
+            if unique and c in buffer:
+                continue
+
+            buffer.append(c)
+
+        return ''.join(buffer)
